@@ -115,6 +115,13 @@ $("#more").addEventListener("click",()=>{st.all=!st.all;draw()});
 draw();
 $("#foot").textContent=`${fmt(nF)} tesis · ${fmt(sDays+rDays)} görev günü`;
 
+/* E-posta kopyalama */
+document.querySelectorAll("button.copy").forEach(b=>b.addEventListener("click",()=>{
+ const t=b.dataset.copy,done=()=>{b.textContent="Kopyalandı";b.classList.add("ok");setTimeout(()=>{b.textContent="Kopyala";b.classList.remove("ok")},1800)};
+ const sel=()=>{const r=document.createRange();r.selectNodeContents(b.parentElement.querySelector(".ci-v"));const s=getSelection();s.removeAllRanges();s.addRange(r)};
+ if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,sel);else sel()}));
+$("#badgeN").textContent=fmt(nF);
+
 /* Menüde aktif bölüm */
 const links=[...document.querySelectorAll(".nav a.l")];
 if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-45% 0px -50% 0px"});
