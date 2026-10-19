@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mohamed · Enerji Etüt Portföyü</title>
+<meta name="description" content="Mohamed – enerji verimliliği saha etüdü ve teknik raporlama portföyü: 146 tesis, 19 il, trafo ve elektrik motoru verimlilik raporları.">
+<meta name="theme-color" content="#0A1820">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mohamed · Enerji Etüt Portföyü">
+<meta property="og:description" content="Mohamed – enerji verimliliği saha etüdü ve teknik raporlama portföyü: 146 tesis, 19 il, trafo ve elektrik motoru verimlilik raporları.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1820'/%3E%3Cpath d='M36 8 18 36h12l-4 20 20-30H34z' fill='%23F08A48'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="band nav" aria-label="Ana menü"><div class="in">
+ <a class="brand" href="#top">Mohamed<span>.</span></a>
+ <ul>
+  <li class="hide-sm"><a class="l" href="#uzmanlik">Uzmanlık</a></li>
+  <li><a class="l" href="#kariyer">Kariyer</a></li>
+  <li><a class="l" href="#projeler">Projeler</a></li>
+  <li><a class="l" href="#portfoy">Portföy</a></li>
+ </ul>
+</div></nav>
+<header class="band hero" id="top">
+ <div class="in">
+  <p class="eyebrow"><span>Enerji verimliliği · Portföy <span id="period"></span></span></p>
+  <h1>Mohamed<span class="dot">.</span></h1>
+  <div class="hero-top">
+   <div class="txt">
+    <p class="role">Sahada ölçen, <span>raporla karar verdiren</span> enerji etüt uzmanı</p>
+   </div>
+   <div class="txt">
+    <p class="lede" id="lede"></p>
+    <div class="cta"><a class="btn pri" href="#projeler">Öne çıkan projeler →</a><a class="btn sec2" href="#portfoy">Tam portföy</a></div>
+   </div>
+  </div>
+  <div class="tags" id="tags"></div>
+  <div class="kpis" id="kpis"></div>
+ </div>
+ <svg class="wave" id="wave" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+</header>
+
+<main>
+<section class="band sec"><div class="in">
+ <div class="shead"><p class="eyebrow">Neden benimle</p><h2>Ölçümden rapora, <em>tek elden</em></h2></div>
+ <div class="why" id="why"></div>
+</div></section>
+
+<section class="band sec" id="uzmanlik"><div class="in">
+ <div class="shead"><p class="eyebrow">Uzmanlık alanları</p><h2>Trafodan motora, <em>sahadan rapora</em></h2>
+  <p class="lede">Her kart, o alanda görev yürüttüğüm tesis sayısını ve 146 tesislik portföy içindeki payını gösterir.</p></div>
+ <div class="skills" id="skills"></div>
+</div></section>
+
+<section class="band sec" id="kariyer"><div class="in">
+ <div class="shead"><p class="eyebrow">Kariyer ivmesi</p><h2>Masa başından <em>sahaya</em></h2>
+  <p class="lede">Aylık görev günleri. Raporlamayla başlayan yolculuk, 2025 sonbaharından itibaren saha etüdü liderliğine dönüşüyor.</p></div>
+ <div class="panel">
+  <div class="legend"><span><i style="background:var(--field)"></i>Saha etüdü günü</span><span><i style="background:var(--copper)"></i>Rapor çalışma günü</span></div>
+  <div class="chart" id="monthly"></div>
+  <div class="phases" id="phases"></div>
+ </div>
+</div></section>
+
+<section class="band sec"><div class="in">
+ <div class="shead"><p class="eyebrow">Coğrafya ve sektörler</p><h2>19 ilde saha, <em>8 sektörde</em> deneyim</h2></div>
+ <div class="two">
+  <div class="panel"><h3>Saha etüdü yapılan iller</h3><p class="note">Saha günü · tesisleri görmek için ile dokunun</p><div class="rows" id="cities"></div></div>
+  <div class="panel"><h3>Sektör dağılımı</h3><p class="note">Tesis sayısı · tüm portföy</p><div class="rows" id="sectors"></div></div>
+ </div>
+</div></section>
+
+<section class="band sec" id="projeler"><div class="in">
+ <div class="shead"><p class="eyebrow">Öne çıkan projeler</p><h2>Uçtan uca <em>yürütülen</em> etütler</h2>
+  <p class="lede">Saha etüdü ve raporu birlikte yürüttüğüm 32 tesisten, en fazla görev gününe sahip altısı.</p></div>
+ <div class="cards" id="cards"></div>
+</div></section>
+
+<div class="marquee" aria-label="Çalışılan tesislerden bazıları"><div class="track" id="track"></div></div>
+
+<section class="band sec" id="portfoy"><div class="in">
+ <div class="shead"><p class="eyebrow">Tam portföy</p><h2><em>146</em> tesisin tamamı</h2></div>
+ <div class="tools">
+  <input id="q" type="search" placeholder="Tesis veya il ara" aria-label="Tesis veya il ara">
+  <div class="seg" id="seg" role="group" aria-label="Görev türü">
+   <button type="button" data-v="" aria-pressed="true">Tümü</button>
+   <button type="button" data-v="Saha Etüdü + Rapor" aria-pressed="false">Saha + Rapor</button>
+   <button type="button" data-v="Saha Etüdü" aria-pressed="false">Saha</button>
+   <button type="button" data-v="Rapor" aria-pressed="false">Rapor</button>
+  </div>
+  <select id="sec" aria-label="Sektör"><option value="">Tüm sektörler</option></select>
+ </div>
+ <div class="tbl"><table>
+  <thead><tr>
+   <th><button type="button" data-k="n">Tesis</button></th>
+   <th><button type="button" data-k="c">Konum</button></th>
+   <th>Görev</th><th>Kapsam</th>
+   <th class="n"><button type="button" data-k="s">Saha</button></th>
+   <th class="n"><button type="button" data-k="r">Rapor</button></th>
+   <th><button type="button" data-k="a">Dönem</button></th>
+  </tr></thead>
+  <tbody id="tb"></tbody>
+ </table></div>
+ <div class="tfoot"><span class="note" id="count"></span><button type="button" class="more" id="more">Tümünü göster</button></div>
+</div></section>
+</main>
+
+<section class="band closing"><div class="in">
+ <h2>Her rakam bir <em>takvim kaydına</em> dayanıyor.</h2>
+ <div class="method">
+  <div><h3>Kaynak</h3><p>İşletme ana listesi ile görev takvimi eşleştirildi. Takvimde Mohamed adına kayıtlı 2024–2026 satırları kullanıldı.</p></div>
+  <div><h3>Sınıflandırma</h3><p>Tesis adıyla birlikte geçen “Etüt” kayıtları saha görevi, “Rapor” kayıtları rapor görevi sayıldı.</p></div>
+  <div><h3>Kanıt</h3><p>429 görev günü tarih, özgün görev metni ve kaynak hücreyle izlenebilir. Güvenli eşleşmeyen 43 kayıt toplamlara dahil edilmedi.</p></div>
+ </div>
+ <footer><span>Mohamed · Enerji etüt portföyü</span><span id="foot"></span></footer>
+</div></section>
+<div class="tip" id="tip" hidden></div>
+<script src="data/portfoy.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
