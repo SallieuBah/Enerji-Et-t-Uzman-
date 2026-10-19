@@ -38,6 +38,20 @@ SCOPES = [("Trafo", ["trafo"]), ("Elektrik Motoru", ["motor"]), ("Pompa", ["pomp
           ("Termal Kamera", ["termal"]), ("Buhar Sistemleri", ["buhar"]), ("Basınçlı Hava", ["hava", "basınçlı"])]
 
 
+# Excel'deki ilçe / serbest konum yazımlarını il adına çevirir
+ALIASES = {"GEBZE": "Kocaeli", "ÇERKEZKÖY": "Tekirdağ", "ÇORLU": "Tekirdağ", "BODRUM": "Muğla",
+           "İSTANBUL/AVCILAR": "İstanbul", "AFYON": "Afyon"}
+
+
+def province(konum):
+    key = konum.strip().replace("i", "İ").replace("ı", "I").upper()
+    if key in ("AZERBAYCAN", "BELİRTİLMEMİŞ"):
+        return None
+    if key in ALIASES:
+        return ALIASES[key]
+    return key[0] + lower_tr(key[1:])
+
+
 def lower_tr(s):
     return s.replace("İ", "i").replace("I", "ı").lower()
 
@@ -87,7 +101,7 @@ def main(path):
                 scope.update(k for k, keys in SCOPES if any(x in text for x in keys))
         F.append(dict(n=name.strip(), c=f["Konum"], y=f["Liste Yılı"], t=f["Görev Özeti"], s=f["Saha Günü"],
                       r=f["Rapor Günü"], a=iso(f["İlk Görev"]), b=iso(f["Son Görev"]), k=f["Kanıt Kaydı"],
-                      sec=sector(name), sc=sorted(scope)))
+                      sec=sector(name), sc=sorted(scope), p=province(f["Konum"])))
 
     # Aylık saha / rapor günleri, boş aylar dahil
     month = collections.defaultdict(lambda: [0, 0])
@@ -104,7 +118,13 @@ def main(path):
     C = [dict(c=c["Şehir"], n=c["Fabrika / Tesis Sayısı"], d=c["Saha Etüdü Günü"],
               f=c["Ziyaret Edilen Fabrikalar / Tesisler"]) for c in cities]
 
-    data = json.dumps(dict(F=F, M=M, C=C), ensure_ascii=False, separators=(",", ":"), default=str)
+    # Saha ziyaretleri tarih sırasıyla; il, Şehir Özeti sayfasındaki tesis listesinden alınır
+    facility_city = {name.strip(): province(c["c"]) for c in C for name in c["f"].split(", ")}
+    V = sorted([iso(t["Tarih"]), t["Fabrika / Tesis"].strip(),
+                facility_city.get(t["Fabrika / Tesis"].strip()) or province(t["Konum"])]
+               for t in tasks if t["Görev"] == "Saha Etüdü")
+
+    data = json.dumps(dict(F=F, M=M, C=C, V=V), ensure_ascii=False, separators=(",", ":"), default=str)
     OUT.write_text("// Otomatik üretildi: scripts/excel_to_data.py\nwindow.PORTFOY=" + data + ";\n", encoding="utf-8")
     print(f"{OUT} yazıldı: {len(F)} tesis, {len(tasks)} görev günü, {len(C)} il")
 

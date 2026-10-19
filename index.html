@@ -23,7 +23,8 @@
  <a class="brand" href="#top">Mohamed<span>.</span></a>
  <ul>
   <li class="hide-sm"><a class="l" href="#uzmanlik">Uzmanlık</a></li>
-  <li><a class="l" href="#kariyer">Kariyer</a></li>
+  <li class="hide-sm"><a class="l" href="#kariyer">Kariyer</a></li>
+  <li><a class="l" href="#harita">Harita</a></li>
   <li><a class="l" href="#projeler">Projeler</a></li>
   <li class="hide-sm"><a class="l" href="#portfoy">Portföy</a></li>
   <li><a class="l cta-l" href="#iletisim">İletişim</a></li>
@@ -72,12 +73,34 @@
  </div>
 </div></section>
 
-<section class="band sec"><div class="in">
- <div class="shead"><p class="eyebrow">Coğrafya ve sektörler</p><h2>19 ilde saha, <em>8 sektörde</em> deneyim</h2></div>
- <div class="two">
-  <div class="panel"><h3>Saha etüdü yapılan iller</h3><p class="note">Saha günü · tesisleri görmek için ile dokunun</p><div class="rows" id="cities"></div></div>
-  <div class="panel"><h3>Sektör dağılımı</h3><p class="note">Tesis sayısı · tüm portföy</p><div class="rows" id="sectors"></div></div>
+<section class="band mapband" id="harita"><div class="in">
+ <div class="shead">
+  <p class="eyebrow"><span>Saha haritası</span></p>
+  <h2>Türkiye'nin dört bir yanında <em>sahadayım</em></h2>
+  <p class="lede">Saha etüdü yaptığım <b id="mFieldN">19</b> il, saha gününe göre parlıyor. Rapor hazırladığım tesislerle birlikte toplam <b id="mAllN">33</b> ile dokundum. Bir ile dokunarak tesisleri görün ya da yolculuğu baştan izleyin.</p>
  </div>
+ <div class="mapgrid">
+  <div class="mapwrap">
+   <div class="maptop">
+    <button type="button" class="play" id="play" aria-pressed="false"><span class="ico" aria-hidden="true">▶</span><span class="lbl">Yolculuğu oynat</span></button>
+    <div class="clock" aria-live="polite"><b id="mDate">Ağu 2024 – Kas 2026</b><span id="mCount">19 il · 148 saha günü</span></div>
+   </div>
+   <svg class="map" id="map" role="group" aria-label="Türkiye saha etüdü haritası"></svg>
+   <div class="progress"><i id="mProg"></i></div>
+   <div class="mlegend">
+    <span><i class="lg-f"></i>Saha etüdü (renk koyulaştıkça daha çok gün)</span>
+    <span><i class="lg-r"></i>Yalnız rapor hazırlanan il</span>
+    <span class="src">Harita verisi © OpenStreetMap katkıda bulunanlar (ODbL)</span>
+   </div>
+  </div>
+  <aside class="mpanel" id="mpanel" aria-live="polite"></aside>
+ </div>
+</div></section>
+
+<section class="band sec"><div class="in">
+ <div class="shead"><p class="eyebrow">Sektörler</p><h2><em>8 sektörde</em> deneyim</h2>
+  <p class="lede">Metal ve otomotivden gıdaya, tekstilden otel ve alışveriş merkezlerine kadar farklı enerji profillerine sahip tesisler.</p></div>
+ <div class="panel"><div class="rows cols2" id="sectors"></div></div>
 </div></section>
 
 <section class="band sec" id="projeler"><div class="in">
@@ -152,6 +175,7 @@
 </div></section>
 <div class="tip" id="tip" hidden></div>
 <script src="data/portfoy.js"></script>
+<script src="data/turkiye.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

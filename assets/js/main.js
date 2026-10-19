@@ -70,9 +70,7 @@ $("#skills").innerHTML=SK.map(s=>`<div class="skill ${s[1]}"><strong>${s[0]}</st
   return `<div class="phase"><b>${y}</b><h3>${PH[y]}</h3><div class="bar2"><span class="s" style="flex:${s}"></span><span class="r" style="flex:${r}"></span></div><p class="num">${s} saha günü · ${r} rapor günü</p></div>`}).join("");
 })();
 
-/* İller ve sektörler */
-const cmax=Math.max(...C.map(c=>c.d));
-$("#cities").innerHTML=C.slice().sort((a,b)=>b.d-a.d||b.n-a.n).map(c=>`<details class="city"><summary><div class="row"><span class="lbl">${esc(tc(c.c))}</span><span class="bar"><i style="width:${c.d/cmax*100}%"></i></span><span class="v">${c.d}</span></div></summary><p class="who">${c.n} tesis: ${esc(c.f)}</p></details>`).join("");
+/* Sektörler */
 const smax=SE[0][1];
 $("#sectors").innerHTML=SE.map(([k,v])=>`<div class="row sec"><span class="lbl">${esc(k)}</span><span class="bar"><i style="width:${v/smax*100}%"></i></span><span class="v">${v}</span></div>`).join("")+
  `<p class="note" style="margin-top:16px">Saha etüdü yapılan tesis: ${field.length} · yalnız rapor: ${nF-field.length}</p>`;
@@ -114,6 +112,63 @@ document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=
 $("#more").addEventListener("click",()=>{st.all=!st.all;draw()});
 draw();
 $("#foot").textContent=`${fmt(nF)} tesis · ${fmt(sDays+rDays)} görev günü`;
+
+/* Türkiye haritası */
+(function(){
+ const T=window.TURKIYE,V=DATA.V||[],svg=$("#map");if(!T||!svg)return;
+ const NS="http://www.w3.org/2000/svg",el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e};
+ svg.setAttribute("viewBox",`0 0 ${T.w} ${T.h}`);
+ const days={},facs={},first={};
+ V.forEach(([d,f,p])=>{days[p]=(days[p]||0)+1;(facs[p]=facs[p]||{})[f]=(facs[p][f]||0)+1;if(!first[p])first[p]=d});
+ const rep={};F.filter(f=>f.p&&f.s===0).forEach(f=>(rep[f.p]=rep[f.p]||[]).push(f));
+ const dmax=Math.max(...Object.values(days)),op=n=>.3+.7*Math.sqrt(n/dmax);
+ const nField=Object.keys(days).length,nAll=new Set([...Object.keys(days),...Object.keys(rep)]).size;
+ $("#mFieldN").textContent=nField;$("#mAllN").textContent=nAll;
+ const gP=el("g",{}),gD=el("g",{}),gL=el("g",{}),gR=el("g",{});svg.append(gP,gD,gL,gR);
+ const P={};
+ Object.entries(T.p).forEach(([name,[d,cx,cy]])=>{
+  const act=days[name]||rep[name],path=el("path",{d,class:"pv"+(act?" act":"")});
+  if(act){path.setAttribute("tabindex","0");path.setAttribute("role","button");path.setAttribute("aria-label",name)}
+  gP.append(path);P[name]={path,cx,cy};
+ });
+ Object.keys(days).forEach(n=>{const{cx,cy}=P[n];gD.append(el("circle",{class:"ring",cx,cy,r:4,style:`animation-delay:${(Math.random()*2.6).toFixed(2)}s`}),el("circle",{class:"dot",cx,cy,r:2.2}))});
+ Object.entries(days).sort((a,b)=>b[1]-a[1]).slice(0,6).forEach(([n])=>{const{cx,cy}=P[n],t=el("text",{class:"lbl",x:cx+6,y:cy-6});t.textContent=n;gL.append(t)});
+ function paint(cnt){Object.entries(P).forEach(([n,{path}])=>{const c=cnt[n]||0;
+  path.classList.toggle("f",c>0);path.classList.toggle("r",!c&&!!rep[n]&&cnt===days);
+  path.style.fillOpacity=c?op(c):""})}
+ const dlabel=d=>{const[y,m]=d.split("-");return AY[+m-1]+" "+y};
+ function panel(n){
+  Object.values(P).forEach(p=>p.path.classList.remove("sel"));if(P[n])P[n].path.classList.add("sel");
+  const f=facs[n]||{},r=rep[n]||[],fl=Object.entries(f).sort((a,b)=>b[1]-a[1]);
+  $("#mpanel").innerHTML=`<span class="k">${days[n]?"Saha etüdü yapılan il":"Rapor hazırlanan il"}</span><h3>${esc(n)}</h3>
+   <div class="st"><div><b>${days[n]||0}</b><span>saha günü</span></div><div class="c"><b>${fl.length+r.length}</b><span>tesis</span></div></div>
+   ${fl.length?`<span class="k">Sahada çalışılan tesisler</span><ul>${fl.map(([x,c])=>`<li>${esc(x)}<span>${c} gün</span></li>`).join("")}</ul>`:""}
+   ${r.length?`<span class="k">Rapor hazırlanan tesisler</span><ul>${r.map(x=>`<li>${esc(x.n)}<span>${x.r} gün</span></li>`).join("")}</ul>`:""}
+   ${first[n]?`<p class="hint">İlk saha ziyareti: ${dlabel(first[n])}</p>`:""}`;
+ }
+ svg.addEventListener("click",e=>{const n=Object.keys(P).find(k=>P[k].path===e.target);if(n&&(days[n]||rep[n]))panel(n)});
+ svg.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const n=Object.keys(P).find(k=>P[k].path===e.target);if(n){e.preventDefault();panel(n)}});
+ const rest=()=>{paint(days);gD.style.display=gL.style.display="";$("#mDate").textContent=dlabel(V[0][0])+" – "+dlabel(V[V.length-1][0]);
+  $("#mCount").textContent=`${nField} il · ${V.length} saha günü`;$("#mProg").style.width="100%"};
+ rest();panel(Object.entries(days).sort((a,b)=>b[1]-a[1])[0][0]);
+ /* Yolculuk animasyonu */
+ const btn=$("#play");let timer=null;
+ function stop(){clearInterval(timer);timer=null;btn.setAttribute("aria-pressed","false");btn.querySelector(".lbl").textContent="Yolculuğu oynat";btn.querySelector(".ico").textContent="▶";rest()}
+ btn.addEventListener("click",()=>{
+  if(timer)return stop();
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,cnt={};let i=0;
+  btn.setAttribute("aria-pressed","true");btn.querySelector(".lbl").textContent="Durdur";btn.querySelector(".ico").textContent="■";
+  gD.style.display=gL.style.display="none";paint(cnt);
+  timer=setInterval(()=>{
+   if(i>=V.length){clearInterval(timer);timer=null;setTimeout(stop,900);return}
+   const[d,f,p]=V[i++];cnt[p]=(cnt[p]||0)+1;paint(cnt);
+   if(!reduce){const{cx,cy}=P[p],r=el("circle",{class:"ripple",cx,cy,r:5});gR.append(r);setTimeout(()=>r.remove(),1000)}
+   $("#mDate").textContent=dlabel(d);$("#mCount").textContent=`${Object.keys(cnt).length} il · ${i} saha günü`;
+   $("#mProg").style.width=(i/V.length*100)+"%";
+   if(cnt[p]===1)panel(p);
+  },reduce?20:70);
+ });
+})();
 
 /* E-posta kopyalama */
 document.querySelectorAll("button.copy").forEach(b=>b.addEventListener("click",()=>{
