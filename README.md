@@ -9,11 +9,18 @@ Saf HTML, CSS ve JavaScript; derleme adımı yok.
 | --- | --- |
 | `index.html` | Sayfa yapısı ve metinler |
 | `assets/css/style.css` | Tasarım (renkler en üstteki `:root` bloğunda) |
+| `assets/js/i18n.js` | Türkçe / İngilizce dil seçimi ve İngilizce metinler |
 | `assets/js/main.js` | Grafikler, kartlar, tablo ve filtreler |
 | `data/portfoy.js` | Tesis, il ve aylık görev verileri (Excel'den üretilir) |
 | `data/turkiye.js` | Türkiye il sınırları (harita) |
 | `scripts/excel_to_data.py` | Excel → `data/portfoy.js` dönüştürücü |
 | `scripts/build_map.py` | İl sınırları GeoJSON → `data/turkiye.js` dönüştürücü |
+
+## Dil
+
+Site Türkçe ve İngilizce açılır. Türkçe metinler `index.html` içinde, İngilizce karşılıkları `assets/js/i18n.js`
+dosyasındadır (`data-i18n` anahtarlarıyla eşleşir). Grafik ve kartlardaki metinler `main.js` içinde `L("Türkçe", "English")`
+biçimindedir. Dil sırasıyla `?lang=tr|en` adresi, ziyaretçinin önceki seçimi ve tarayıcı diline göre belirlenir.
 
 ## Verileri güncellemek
 
