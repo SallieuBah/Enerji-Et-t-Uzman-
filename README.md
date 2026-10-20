@@ -12,6 +12,7 @@ Saf HTML, CSS ve JavaScript; derleme adımı yok.
 | `assets/js/i18n.js` | Türkçe / İngilizce dil seçimi ve İngilizce metinler |
 | `assets/js/main.js` | Grafikler, kartlar, tablo ve filtreler |
 | `data/portfoy.js` | Tesis, il ve aylık görev verileri (Excel'den üretilir) |
+| `data/vakalar.js` | Vaka çalışmaları: etüt raporlarındaki trafo ve motor önlemleri (EVÖ) |
 | `data/turkiye.js` | Türkiye il sınırları (harita) |
 | `scripts/excel_to_data.py` | Excel → `data/portfoy.js` dönüştürücü |
 | `scripts/build_map.py` | İl sınırları GeoJSON → `data/turkiye.js` dönüştürücü |
@@ -30,6 +31,12 @@ python scripts/excel_to_data.py Mohamed_Enerji_Etut_Fabrika_Portfoyu.xlsx
 ```
 
 Excel dosyası depoya eklenmez (`.gitignore`), yalnızca üretilen `data/portfoy.js` eklenir.
+
+## Yeni vaka çalışması eklemek
+
+`data/vakalar.js` dosyasındaki `window.VAKALAR` listesine yeni bir tesis ekleyin. Her önlem için rapordaki
+kWh/yıl, TEP/yıl, TL/yıl, CO₂ ton/yıl, yatırım ve geri ödeme değerlerini girin. Birden fazla vaka olduğunda
+bölümün üstünde tesis sekmeleri kendiliğinden belirir.
 
 ## Haritayı yeniden üretmek
 

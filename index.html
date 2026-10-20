@@ -28,6 +28,7 @@
   <li class="hide-sm"><a class="l" href="#kariyer" data-i18n="nav.car">Kariyer</a></li>
   <li><a class="l" href="#harita" data-i18n="nav.map">Harita</a></li>
   <li><a class="l" href="#projeler" data-i18n="nav.prj">Projeler</a></li>
+  <li class="hide-sm"><a class="l" href="#vaka" data-i18n="nav.cs">Vaka</a></li>
   <li class="hide-sm"><a class="l" href="#portfoy" data-i18n="nav.pf">Portföy</a></li>
   <li><button type="button" class="lang" id="lang" aria-label="Switch to English">EN</button></li>
   <li><a class="l cta-l" href="#iletisim" data-i18n="nav.ct">İletişim</a></li>
@@ -112,6 +113,35 @@
  <div class="cards" id="cards"></div>
 </div></section>
 
+<section class="band sec" id="vaka"><div class="in">
+ <div class="shead">
+  <p class="eyebrow" data-i18n="cs.eb">Vaka çalışması</p>
+  <h2 id="csTitle"></h2>
+  <p class="lede" data-i18n="cs.l">Etüt raporundaki trafo ve motor önlemleri. Önlemleri açıp kapatarak kendi yatırım paketinizi kurun; tasarruf ve geri ödeme süresi anında yeniden hesaplanır.</p>
+ </div>
+ <div class="cs-tabs" id="csTabs" role="tablist" hidden></div>
+ <div class="cs">
+  <div class="cs-kpis" id="csKpis" aria-live="polite"></div>
+  <div class="cs-body">
+   <div class="cs-list">
+    <div class="cs-filter" role="group" aria-label="Önlem grubu" data-i18n-aria-label="a7">
+     <button type="button" data-g="all" aria-pressed="true" data-i18n="cs.all">Tüm önlemler</button>
+     <button type="button" data-g="Trafo" aria-pressed="false" data-i18n="cs.tr">Yalnız trafo</button>
+     <button type="button" data-g="Motor" aria-pressed="false" data-i18n="cs.mo">Yalnız motor</button>
+     <button type="button" data-g="fast" aria-pressed="false" data-i18n="cs.fast">3 yılda dönenler</button>
+    </div>
+    <ul id="csList"></ul>
+   </div>
+   <div class="cs-chart">
+    <div class="cs-ch-h"><h3 data-i18n="cs.ch">10 yıllık kümülatif net kazanç</h3><span class="note" data-i18n="cs.chn">Yatırım düşüldükten sonra · TL</span></div>
+    <div id="csChart"></div>
+    <p class="cs-insight" id="csInsight"></p>
+   </div>
+  </div>
+  <p class="note cs-src" data-i18n="cs.src">Kaynak: tesisin enerji etüt raporu, EVÖ 6–12. Tutarlar raporun hazırlandığı dönemin birim fiyatlarıyla hesaplanmıştır; geri ödeme basit geri ödeme süresidir.</p>
+ </div>
+</div></section>
+
 <div class="marquee" aria-label="Çalışılan tesislerden bazıları" data-i18n-aria-label="a2"><div class="track" id="track"></div></div>
 
 <section class="band sec" id="portfoy"><div class="in">
@@ -179,6 +209,7 @@
 <div class="tip" id="tip" hidden></div>
 <script src="data/portfoy.js"></script>
 <script src="data/turkiye.js"></script>
+<script src="data/vakalar.js"></script>
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

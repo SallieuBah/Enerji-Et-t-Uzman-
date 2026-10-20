@@ -176,6 +176,66 @@ $("#foot").textContent=L(`${fmt(nF)} tesis · ${fmt(sDays+rDays)} görev günü`
  });
 })();
 
+/* Vaka çalışması */
+(function(){
+ const VK=window.VAKALAR||[];if(!VK.length||!$("#csList"))return;
+ const nf=(v,d=0)=>v.toLocaleString(EN?"en-US":"tr-TR",{minimumFractionDigits:d,maximumFractionDigits:d});
+ const money=v=>v>=1e6?L(`${nf(v/1e6,2)} mn TL`,`TRY ${nf(v/1e6,2)}M`):v>=1e3?L(`${nf(v/1e3,0)} bin TL`,`TRY ${nf(v/1e3,0)}k`):L(`${nf(v)} TL`,`TRY ${nf(v)}`);
+ const yr=v=>L(`${nf(v,1)} yıl`,`${nf(v,1)} yrs`);
+ const gcls=g=>g<=3?"g1":g<=6?"g2":"g3";
+ let vk=VK[0],on=new Set(vk.evo.map(e=>e.no)),grp="all";
+ if(VK.length>1){const t=$("#csTabs");t.hidden=false;
+  t.innerHTML=VK.map((v,i)=>`<button type="button" role="tab" aria-selected="${!i}" data-i="${i}">${esc(v.tesis)}</button>`).join("");
+  t.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;vk=VK[+b.dataset.i];on=new Set(vk.evo.map(x=>x.no));grp="all";
+   t.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));sync();list();calc()})}
+ function list(){
+  $("#csTitle").innerHTML=L(`${esc(vk.tesis)}: trafo ve motor önlemleriyle yılda <em>${money(vk.evo.reduce((a,e)=>a+e.tl,0))}</em> tasarruf`,
+   `${esc(vk.tesis)}: <em>${money(vk.evo.reduce((a,e)=>a+e.tl,0))}</em> a year saved with transformer and motor measures`);
+  $("#csList").innerHTML=vk.evo.map(e=>`<li class="evo ${on.has(e.no)?"on":"off"}" data-no="${e.no}" role="switch" tabindex="0" aria-checked="${on.has(e.no)}" title="${esc(L(e.d,e.de))}">
+   <span class="sw" aria-hidden="true"></span>
+   <span class="nm"><em>EVÖ ${e.no}</em>${esc(L(e.n,e.en))}</span>
+   <span class="mt">${nf(e.kwh)} kWh · ${money(e.tl)}${L("/yıl","/yr")} · ${L("yatırım","invest.")} ${money(e.inv)}</span>
+   <span class="go ${gcls(e.go)}">${yr(e.go)}</span></li>`).join("");
+ }
+ function sync(){$(".cs-filter").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===grp))}
+ function calc(){
+  const s=vk.evo.filter(e=>on.has(e.no)),sum=k=>s.reduce((a,e)=>a+e[k],0);
+  const tl=sum("tl"),inv=sum("inv"),pb=tl?inv/tl:0;
+  $("#csKpis").innerHTML=`<div class="hero"><b>${money(tl)}</b><span>${L("Yıllık tasarruf","Annual savings")}</span></div>
+   <div><b>${nf(sum("kwh"))}</b><span>kWh${L("/yıl","/yr")}</span></div>
+   <div><b>${nf(sum("tep"),1)}</b><span>TEP${L("/yıl","/yr")}</span></div>
+   <div><b>${nf(sum("co2"),1)}<small>t</small></b><span>CO₂${L("/yıl azalma"," cut/yr")}</span></div>
+   <div><b>${money(inv)}</b><span>${L("Yatırım","Investment")}</span></div>
+   <div class="pb"><b>${tl?yr(pb):"–"}</b><span>${L("Geri ödeme","Payback")}</span></div>`;
+  /* 10 yıllık kümülatif net kazanç */
+  const W=600,H=260,PL=58,PR=10,PT=16,PB=30,N=10,vals=[...Array(N+1)].map((_,t)=>tl*t-inv);
+  const maxV=Math.max(vals[N],inv*.25,1),minV=Math.min(-inv,-maxV*.08);
+  const y=v=>PT+(H-PT-PB)*(maxV-v)/(maxV-minV),cw=(W-PL-PR)/(N+1),bw=cw*.62;
+  const raw=(maxV-minV)/5,p10=Math.pow(10,Math.floor(Math.log10(raw))),step=(raw/p10<2?2:raw/p10<5?5:10)*p10,tk=[];for(let v=Math.ceil(minV/step)*step;v<=maxV;v+=step)tk.push(v);
+  let g=tk.map(v=>`<line class="grid" x1="${PL}" x2="${W-PR}" y1="${y(v)}" y2="${y(v)}"/><text x="${PL-8}" y="${y(v)+4}" text-anchor="end">${!v?"0":Math.abs(maxV-minV)>=4e6?(v/1e6).toLocaleString(EN?"en-US":"tr-TR")+(EN?"M":" mn"):(v/1e3).toLocaleString(EN?"en-US":"tr-TR")+(EN?"k":" bin")}</text>`).join("");
+  vals.forEach((v,t)=>{const x=PL+t*cw+(cw-bw)/2,y0=y(0),yv=y(v);
+   g+=`<rect class="${v<0?"neg":"pos"}" x="${x}" y="${Math.min(y0,yv)}" width="${bw}" height="${Math.max(Math.abs(yv-y0),.5)}" rx="2"/>`;
+   g+=`<text x="${x+bw/2}" y="${H-10}" text-anchor="middle">${t}</text>`});
+  g+=`<line class="zero" x1="${PL}" x2="${W-PR}" y1="${y(0)}" y2="${y(0)}"/>`;
+  if(tl&&pb<=N){const x=PL+pb*cw+cw/2;g+=`<line class="pbl" x1="${x}" x2="${x}" y1="${PT}" y2="${H-PB}"/><text class="pbt" x="${x+6}" y="${PT+10}">${L("Geri ödeme","Payback")} ${yr(pb)}</text>`}
+  $("#csChart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${L("Yıllara göre kümülatif net kazanç","Cumulative net gain by year")}">${g}</svg>`;
+  const best=s.slice().sort((a,b)=>a.go-b.go)[0],trf=s.filter(e=>e.t==="Trafo").reduce((a,e)=>a+e.tl,0);
+  $("#csInsight").innerHTML=!s.length?L("Hesaplamak için en az bir önlem seçin.","Select at least one measure to calculate."):
+   L(`Bu paket <b>${yr(pb)}</b> içinde kendini amorti ediyor ve 10 yılda yatırım düşüldükten sonra <b>${money(vals[N])}</b> net kazanç sağlıyor.${trf&&trf<tl?` Trafo önlemlerinin tasarruftaki payı: <b>%${Math.round(trf/tl*100)}</b>.`:""} En hızlı dönen önlem: ${esc(best.n)} (${yr(best.go)}).`,
+     `This package pays for itself in <b>${yr(pb)}</b> and delivers <b>${money(vals[N])}</b> net gain over 10 years after the investment.${trf&&trf<tl?` <b>${Math.round(trf/tl*100)}%</b> of the savings come from transformer measures.`:""} Fastest payback: ${esc(best.en)} (${yr(best.go)}).`);
+ }
+ function toggle(li){const no=+li.dataset.no;on.has(no)?on.delete(no):on.add(no);grp="";sync();list();calc();
+  const n=$(`#csList [data-no="${no}"]`);if(n)n.focus()}
+ $("#csList").addEventListener("click",e=>{const li=e.target.closest(".evo");if(li)toggle(li)});
+ $("#csList").addEventListener("keydown",e=>{const li=e.target.closest(".evo");if(li&&(e.key===" "||e.key==="Enter")){e.preventDefault();toggle(li)}});
+ $(".cs-filter").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;grp=b.dataset.g;
+  on=new Set(vk.evo.filter(x=>grp==="all"||x.t===grp||(grp==="fast"&&x.go<=3)).map(x=>x.no));sync();list();calc()});
+ list();calc();
+ /* Proje kartından vakaya bağlantı */
+ document.querySelectorAll("#cards .card").forEach(c=>{const h=c.querySelector("h3");if(h&&VK.some(v=>v.tesis===h.textContent)){
+  const a=document.createElement("a");a.href="#vaka";a.className="cs-link";a.textContent=L("Vaka çalışmasını incele →","Read the case study →");c.querySelector(".bd").append(a)}});
+})();
+
 /* E-posta kopyalama */
 document.querySelectorAll("button.copy").forEach(b=>b.addEventListener("click",()=>{
  const t=b.dataset.copy,done=()=>{b.textContent=L("Kopyalandı","Copied");b.classList.add("ok");setTimeout(()=>{b.textContent=L("Kopyala","Copy");b.classList.remove("ok")},1800)};
