@@ -58,3 +58,8 @@ Harita verisi © OpenStreetMap katkıda bulunanlar, [ODbL](https://opendatacommo
 Depo ayarlarında **Settings → Pages → Build and deployment** altında kaynak olarak
 `Deploy from a branch`, dal olarak `main` ve klasör olarak `/ (root)` seçin.
 Site birkaç dakika içinde `https://sallieubah.github.io/Enerji-Et-t-Uzman-/` adresinde yayına girer.
+
+## Önbellek
+
+Tarayıcıların eski dosyaları göstermemesi için `index.html` içindeki CSS ve JS adreslerinde `?v=` sürüm etiketi vardır.
+Bir dosyayı değiştirdiğinizde bu etiketi güncelleyin (örneğin tarih-saat: `?v=202610201400`).
