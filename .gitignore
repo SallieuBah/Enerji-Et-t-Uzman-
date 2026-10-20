@@ -2,3 +2,4 @@
 *.xls
 .DS_Store
 __pycache__/
+video/*.mp4

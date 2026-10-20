@@ -63,3 +63,15 @@ Site birkaç dakika içinde `https://sallieubah.github.io/Enerji-Et-t-Uzman-/` a
 
 Tarayıcıların eski dosyaları göstermemesi için `index.html` içindeki CSS ve JS adreslerinde `?v=` sürüm etiketi vardır.
 Bir dosyayı değiştirdiğinizde bu etiketi güncelleyin (örneğin tarih-saat: `?v=202610201400`).
+
+## LinkedIn videosu
+
+Saha haritası animasyonu 20 saniyelik 1080×1350 (4:5) MP4 olarak üretilir:
+
+```bash
+node scripts/render_video.js tr   # video/saha-haritasi-tr.mp4
+node scripts/render_video.js en   # video/saha-haritasi-en.mp4
+```
+
+Playwright ve ffmpeg gerekir. Video `data/` klasöründeki güncel verilerle çizildiği için Excel güncellendikten sonra
+yeniden üretilebilir. MP4 dosyaları depoya eklenmez.

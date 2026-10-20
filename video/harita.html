@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Saha haritası · video</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 1080×1350 (4:5) LinkedIn videosu; her kare render(t) ile çizilir, CSS animasyonu yok */
+:root{--night:#0A1820;--night-2:#112631;--line:#23404F;--ink:#EAF2F5;--muted:#8FA9B6;--glow:#F08A48;--glow-2:#4CC3E6;
+ --display:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:var(--night);color:var(--ink);font-family:var(--body)}
+#stage{position:relative;width:1080px;height:1350px;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:60px 60px;opacity:.28;
+ mask-image:radial-gradient(ellipse 75% 55% at 50% 48%,#000 15%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 75% 55% at 50% 48%,#000 15%,transparent 75%)}
+#stage::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 55% 35% at 50% 50%,color-mix(in srgb,var(--glow-2) 16%,transparent),transparent 70%);pointer-events:none}
+.top{position:absolute;left:72px;right:72px;top:80px;display:flex;flex-direction:column;gap:22px;z-index:2}
+.eb{font:500 22px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--glow);display:flex;align-items:center;gap:16px}
+.eb::before{content:"";width:40px;height:3px;background:currentColor}
+h1{font:900 104px/.9 var(--display);font-stretch:66%;letter-spacing:-.025em}
+h1 em{font-style:normal;color:var(--glow-2)}
+.who{font:600 30px/1.2 var(--display);font-stretch:100%;color:var(--muted)}
+.who b{color:var(--ink);font-weight:700}
+#map{position:absolute;left:46px;top:500px;width:988px;height:auto;z-index:2;overflow:visible}
+#map .pv{fill:var(--night-2);stroke:var(--line);stroke-width:.8}
+#map .pv.f{fill:var(--glow-2)}
+#map .rip{fill:none;stroke:var(--glow);stroke-width:2.4}
+#map .dot{fill:var(--ink)}
+#map .tag{font:700 15px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--night);stroke-width:5px}
+.hud{position:absolute;left:72px;right:72px;top:960px;z-index:2;display:flex;flex-direction:column;gap:22px}
+.row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+#date{font:900 92px/.9 var(--display);font-stretch:66%;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#fac{font:500 24px/1.3 var(--mono);color:var(--muted);text-align:right;max-width:520px}
+#fac b{display:block;color:var(--ink);font:700 30px/1.15 var(--body)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--glow-2),var(--glow))}
+.cnt{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.cnt div{padding:22px 0 0;display:flex;flex-direction:column;gap:8px}
+.cnt div+div{padding-left:28px;border-left:1px solid var(--line)}
+.cnt b{font:800 76px/.85 var(--display);font-stretch:68%;font-variant-numeric:tabular-nums}
+.cnt span{font:500 18px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.c1 b{color:var(--glow-2)}.c3 b{color:var(--glow)}
+.foot{position:absolute;left:72px;right:72px;bottom:56px;display:flex;justify-content:space-between;align-items:center;z-index:2;font:500 21px var(--mono);color:var(--muted)}
+.foot b{color:var(--ink);font-weight:500}
+.src{font-size:15px;opacity:.7}
+/* Kapanış kartı */
+#end{position:absolute;left:0;right:0;top:930px;bottom:0;background:linear-gradient(180deg,transparent,var(--night) 70px);z-index:3;padding:90px 72px 0;display:flex;flex-direction:column;gap:30px;opacity:0}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.kp div{padding-top:22px;display:flex;flex-direction:column;gap:8px}
+.kp div+div{padding-left:22px;border-left:1px solid var(--line)}
+.kp b{font:800 72px/.85 var(--display);font-stretch:68%}
+.kp span{font:500 16px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cta{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.cta p{font:600 30px/1.25 var(--display);font-stretch:95%;max-width:560px}
+.cta p em{font-style:normal;color:var(--glow)}
+.url{font:600 22px var(--mono);background:var(--glow);color:var(--night);padding:16px 22px;border-radius:999px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="stage">
+ <div class="top" id="top">
+  <p class="eb" id="eb">Enerji verimliliği · Saha etüdü</p>
+  <h1 id="h1">Türkiye'nin dört bir yanında <em>sahadayım.</em></h1>
+  <p class="who" id="who"><b>Mohamed Sallieu Bah</b> · Enerji Etüt Uzmanı</p>
+ </div>
+ <svg id="map"></svg>
+ <div class="hud" id="hud">
+  <div class="row"><div id="date"></div><div id="fac"></div></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="cnt"><div class="c1"><b id="nIl">0</b><span id="lIl">İl</span></div><div class="c2"><b id="nGun">0</b><span id="lGun">Saha günü</span></div><div class="c3"><b id="nTes">0</b><span id="lTes">Tesis</span></div></div>
+ </div>
+ <div id="end">
+  <div class="kp" id="kp"></div>
+  <div class="cta"><p id="ctaT"></p><span class="url">sallieubah.github.io/Enerji-Et-t-Uzman-</span></div>
+ </div>
+ <div class="foot" id="foot"><span><b>linkedin.com/in/mohamed-sallieu-bah</b></span><span class="src" id="src">Harita verisi © OpenStreetMap katkıda bulunanlar</span></div>
+</div>
+<script src="../data/portfoy.js"></script>
+<script src="../data/turkiye.js"></script>
+<script>
+(function(){
+const EN=new URLSearchParams(location.search).get("lang")==="en";
+const D=window.PORTFOY,T=window.TURKIYE,V=D.V;
+const AY=EN?["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]:["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+const $=s=>document.getElementById(s),fmt=n=>n.toLocaleString(EN?"en-US":"tr-TR");
+if(EN){$("eb").textContent="Energy efficiency · Field audits";$("h1").innerHTML="On site <em>across Türkiye.</em>";
+ $("who").innerHTML="<b>Mohamed Sallieu Bah</b> · Energy Audit Specialist";$("lIl").textContent="Provinces";$("lGun").textContent="Field days";$("lTes").textContent="Facilities";
+ $("src").textContent="Map data © OpenStreetMap contributors";document.documentElement.lang="en"}
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0),sD=sum(D.M,m=>m[1]),rD=sum(D.M,m=>m[2]);
+$("kp").innerHTML=[[D.F.length,EN?"Facilities":"Tesis",""],[sD,EN?"Field days":"Saha günü","color:var(--glow-2)"],[rD,EN?"Report days":"Rapor günü","color:var(--glow)"],[D.C.length,EN?"Provinces":"İl",""]]
+ .map(k=>`<div><b style="${k[2]}">${fmt(k[0])}</b><span>${k[1]}</span></div>`).join("");
+$("ctaT").innerHTML=EN?"Transformer, motor and pump efficiency, <em>from site to report.</em>":"Trafo, motor ve pompa verimliliğinde <em>sahadan rapora.</em>";
+/* Harita */
+const NS="http://www.w3.org/2000/svg",svg=$("map");svg.setAttribute("viewBox",`0 0 ${T.w} ${T.h}`);
+const P={},gP=document.createElementNS(NS,"g"),gFx=document.createElementNS(NS,"g");svg.append(gP,gFx);
+Object.entries(T.p).forEach(([n,[d,cx,cy]])=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("class","pv");gP.append(p);P[n]={p,cx,cy}});
+const days={};V.forEach(v=>days[v[2]]=(days[v[2]]||0)+1);const dmax=Math.max(...Object.values(days));
+const op=n=>.3+.7*Math.sqrt(n/dmax);
+/* Zaman çizelgesi (saniye) */
+const T0=2.2,T1=14.2,DUR=20;window.DURATION=DUR;
+const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;          // ziyaret ilerleyişi
+const vt=i=>T0+(T1-T0)*(function inv(y){let a=0,b=1;for(let k=0;k<30;k++){const m=(a+b)/2;ease(m)<y?a=m:b=m}return a})(i/(V.length-1)); // i. ziyaretin anı
+const VT=V.map((_,i)=>vt(i));
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),fade=(t,a,b)=>cl((t-a)/(b-a));
+const dl=d=>{const[y,m]=d.split("-");return AY[+m-1]+" "+y};
+window.render=function(t){
+ let n=0;while(n<V.length&&VT[n]<=t)n++;
+ const cnt={},fac=new Set();for(let i=0;i<n;i++){cnt[V[i][2]]=(cnt[V[i][2]]||0)+1;fac.add(V[i][1])}
+ Object.entries(P).forEach(([k,{p}])=>{const c=cnt[k]||0;p.setAttribute("class","pv"+(c?" f":""));p.style.fillOpacity=c?op(c):""});
+ /* dalgalar ve noktalar */
+ let fx="";
+ for(let i=0;i<n;i++){const age=t-VT[i];if(age<1.1){const{cx,cy}=P[V[i][2]],k=age/1.1;fx+=`<circle class="rip" cx="${cx}" cy="${cy}" r="${4+k*26}" style="opacity:${1-k}"/>`}}
+ Object.keys(cnt).forEach(k=>{const{cx,cy}=P[k];fx+=`<circle class="dot" cx="${cx}" cy="${cy}" r="2.6"/>`});
+ if(t>=T1+.6){const pulse=((t-T1)%1.6)/1.6;Object.keys(cnt).forEach(k=>{const{cx,cy}=P[k];fx+=`<circle class="rip" cx="${cx}" cy="${cy}" r="${3+pulse*16}" style="stroke:var(--glow-2);opacity:${(1-pulse)*.9}"/>`})}
+ if(n&&t<T1+.4){const last=V[n-1],{cx,cy}=P[last[2]];fx+=`<text class="tag" x="${cx+10}" y="${cy-10}">${last[2]}</text>`}
+ gFx.innerHTML=fx;
+ /* HUD */
+ const last=n?V[n-1]:V[0];
+ $("date").textContent=n?dl(last[0]):dl(V[0][0]);
+ $("fac").innerHTML=n?`<b>${last[1].replace(/\s*\(.*?\)/,"")}</b>${last[2]}`:"";
+ $("prog").style.width=(n/V.length*100)+"%";
+ $("nIl").textContent=Object.keys(cnt).length;$("nGun").textContent=n;$("nTes").textContent=fac.size;
+ /* giriş ve kapanış */
+ const intro=fade(t,0,.9);$("top").style.opacity=intro;$("top").style.transform=`translateY(${(1-ease(intro))*30}px)`;
+ svg.style.opacity=.25+.75*fade(t,.6,1.8);
+ $("hud").style.opacity=fade(t,1.4,2.2)*(1-fade(t,15,15.6));
+ const e=fade(t,15.2,16.2);$("end").style.opacity=e;$("end").style.transform=`translateY(${(1-ease(e))*40}px)`;
+ if(t>=DUR-0.01)$("date").textContent="";
+};
+window.render(0);
+window.READY=document.fonts.ready.then(()=>true);
+})();
+</script>
+</body>
+</html>
