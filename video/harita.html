@@ -5,7 +5,7 @@
 <title>Saha haritası · video</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* 1080×1350 (4:5) LinkedIn videosu; her kare render(t) ile çizilir, CSS animasyonu yok */
+/* 1080×1350 (4:5) LinkedIn videosu; her kare render(t) ile çizilir, CSS animasyonu yok. Tesis adları gösterilmez. */
 :root{--night:#0A1820;--night-2:#112631;--line:#23404F;--ink:#EAF2F5;--muted:#8FA9B6;--glow:#F08A48;--glow-2:#4CC3E6;
  --display:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
 *{box-sizing:border-box;margin:0}
@@ -117,7 +117,7 @@ window.render=function(t){
  /* HUD */
  const last=n?V[n-1]:V[0];
  $("date").textContent=n?dl(last[0]):dl(V[0][0]);
- $("fac").innerHTML=n?`<b>${last[1].replace(/\s*\(.*?\)/,"")}</b>${last[2]}`:"";
+ $("fac").innerHTML=n?`<b>${last[2]}</b>${EN?"Field audit":"Saha etüdü"}`:"";
  $("prog").style.width=(n/V.length*100)+"%";
  $("nIl").textContent=Object.keys(cnt).length;$("nGun").textContent=n;$("nTes").textContent=fac.size;
  /* giriş ve kapanış */
