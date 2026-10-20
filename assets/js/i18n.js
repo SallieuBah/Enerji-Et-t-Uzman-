@@ -2,14 +2,9 @@
 (function(){
 const EN={"nav.cs":"Case",
 "cs.eb":"Case study",
-"cs.l":"Transformer and motor measures from the audit report. Switch measures on and off to build your own investment package; savings and payback are recalculated instantly.",
-"cs.all":"All measures",
-"cs.tr":"Transformers only",
-"cs.mo":"Motors only",
-"cs.fast":"Payback under 3 years",
+"cs.l":"Energy efficiency measures from my audit reports. Switch measures on and off to build your own investment package; savings and payback are recalculated instantly.",
 "cs.ch":"10-year cumulative net gain",
 "cs.chn":"After investment · TRY",
-"cs.src":"Source: the facility's energy audit report, measures 6–12. Amounts use unit prices at the time of the report; payback is simple payback.",
 
 "nav.exp": "Expertise",
 "nav.car": "Career",

@@ -34,7 +34,7 @@ Excel dosyası depoya eklenmez (`.gitignore`), yalnızca üretilen `data/portfoy
 
 ## Yeni vaka çalışması eklemek
 
-`data/vakalar.js` dosyasındaki `window.VAKALAR` listesine yeni bir tesis ekleyin. Her önlem için rapordaki
+`data/vakalar.js` dosyasındaki `window.VAKALAR` listesine yeni bir tesis ekleyin. Önlem türü (`t`) `Trafo`, `Motor` veya `Pompa` olabilir; filtre düğmeleri vakadaki türlere göre oluşur. Her önlem için rapordaki
 kWh/yıl, TEP/yıl, TL/yıl, CO₂ ton/yıl, yatırım ve geri ödeme değerlerini girin. Birden fazla vaka olduğunda
 bölümün üstünde tesis sekmeleri kendiliğinden belirir.
 

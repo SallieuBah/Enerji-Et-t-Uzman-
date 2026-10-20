@@ -187,10 +187,21 @@ $("#foot").textContent=L(`${fmt(nF)} tesis · ${fmt(sDays+rDays)} görev günü`
  if(VK.length>1){const t=$("#csTabs");t.hidden=false;
   t.innerHTML=VK.map((v,i)=>`<button type="button" role="tab" aria-selected="${!i}" data-i="${i}">${esc(v.tesis)}</button>`).join("");
   t.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;vk=VK[+b.dataset.i];on=new Set(vk.evo.map(x=>x.no));grp="all";
-   t.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));sync();list();calc()})}
+   t.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));filters();list();calc()})}
+ const TY={Trafo:["trafo","transformer"],Motor:["motor","motor"],Pompa:["pompa","pump"]};
+ const types=()=>Object.keys(TY).filter(t=>vk.evo.some(e=>e.t===t));
+ const join=a=>a.length<2?a[0]||"":a.slice(0,-1).join(", ")+L(" ve "," and ")+a[a.length-1];
+ function filters(){
+  const ty=types(),B=[["all",L("Tüm önlemler","All measures")],...(ty.length>1?ty.map(t=>[t,L(`Yalnız ${TY[t][0]}`,`${TY[t][1][0].toUpperCase()+TY[t][1].slice(1)}s only`)]):[]),["fast",L("3 yılda dönenler","Payback under 3 years")]];
+  $(".cs-filter").innerHTML=B.map(([g,l])=>`<button type="button" data-g="${g}" aria-pressed="${g===grp}">${l}</button>`).join("");
+  const nos=vk.evo.map(e=>e.no);
+  $("#csSrc").textContent=L(`Kaynak: tesisin enerji etüt raporu, EVÖ ${Math.min(...nos)}–${Math.max(...nos)} arasından seçilen önlemler. Tutarlar raporun hazırlandığı dönemin birim fiyatlarıyla hesaplanmıştır; geri ödeme basit geri ödeme süresidir.`,
+   `Source: the facility's energy audit report, selected measures ${Math.min(...nos)}–${Math.max(...nos)}. Amounts use unit prices at the time of the report; payback is simple payback.`);
+ }
  function list(){
-  $("#csTitle").innerHTML=L(`${esc(vk.tesis)}: trafo ve motor önlemleriyle yılda <em>${money(vk.evo.reduce((a,e)=>a+e.tl,0))}</em> tasarruf`,
-   `${esc(vk.tesis)}: <em>${money(vk.evo.reduce((a,e)=>a+e.tl,0))}</em> a year saved with transformer and motor measures`);
+  const tot=money(vk.evo.reduce((a,e)=>a+e.tl,0)),ty=types();
+  $("#csTitle").innerHTML=L(`${esc(vk.tesis)}: ${join(ty.map(t=>TY[t][0]))} önlemleriyle yılda <em>${tot}</em> tasarruf`,
+   `${esc(vk.tesis)}: <em>${tot}</em> a year saved with ${join(ty.map(t=>TY[t][1]))} measures`);
   $("#csList").innerHTML=vk.evo.map(e=>`<li class="evo ${on.has(e.no)?"on":"off"}" data-no="${e.no}" role="switch" tabindex="0" aria-checked="${on.has(e.no)}" title="${esc(L(e.d,e.de))}">
    <span class="sw" aria-hidden="true"></span>
    <span class="nm"><em>EVÖ ${e.no}</em>${esc(L(e.n,e.en))}</span>
@@ -198,6 +209,7 @@ $("#foot").textContent=L(`${fmt(nF)} tesis · ${fmt(sDays+rDays)} görev günü`
    <span class="go ${gcls(e.go)}">${yr(e.go)}</span></li>`).join("");
  }
  function sync(){$(".cs-filter").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===grp))}
+ filters();
  function calc(){
   const s=vk.evo.filter(e=>on.has(e.no)),sum=k=>s.reduce((a,e)=>a+e[k],0);
   const tl=sum("tl"),inv=sum("inv"),pb=tl?inv/tl:0;

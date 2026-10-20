@@ -401,3 +401,4 @@ td .sub{display:block;font-size:12.5px;color:var(--muted)}
 @media (max-width:560px){.cs-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.cs-kpis div{border-right:0!important;border-bottom:1px solid var(--night-line)}.cs-kpis b{font-size:26px}.cs-kpis .hero b{font-size:42px}.cs-list,.cs-chart{padding:16px}}
 .cs-link{font:600 14px var(--body);color:var(--copper);text-decoration:none;border-top:1px solid var(--line);padding-top:12px}
 .cs-link:hover{text-decoration:underline}
+@media (min-width:861px){.cs-chart{position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);align-self:start}}
