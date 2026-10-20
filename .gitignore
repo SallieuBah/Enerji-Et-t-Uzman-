@@ -5,3 +5,5 @@ __pycache__/
 video/*.mp4
 video/*.wav
 video/*.mp3
+video/*.png
+video/*.jpg
