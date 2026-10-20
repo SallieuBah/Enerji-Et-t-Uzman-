@@ -1,134 +1,306 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Saha haritası · video</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>Field map · video</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-/* 1080×1350 (4:5) LinkedIn videosu; her kare render(t) ile çizilir, CSS animasyonu yok. Tesis adları gösterilmez. */
-:root{--night:#0A1820;--night-2:#112631;--line:#23404F;--ink:#EAF2F5;--muted:#8FA9B6;--glow:#F08A48;--glow-2:#4CC3E6;
+/* 1080×1350 (4:5) LinkedIn videosu. Her kare render(t) ile çizilir; CSS animasyonu yok. Tesis adları gösterilmez.
+   Sahneler: giriş → başlık → yolculuk (takvim) → tam harita → bölge turu → il sıralaması → kapanış */
+:root{--night:#0A1820;--night-2:#112631;--night-3:#16303D;--line:#23404F;--ink:#EAF2F5;--muted:#8FA9B6;--glow:#F08A48;--glow-2:#4CC3E6;
  --display:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
 *{box-sizing:border-box;margin:0}
 html,body{width:1080px;height:1350px;overflow:hidden;background:var(--night);color:var(--ink);font-family:var(--body)}
 #stage{position:relative;width:1080px;height:1350px;overflow:hidden}
-#stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:60px 60px;opacity:.28;
- mask-image:radial-gradient(ellipse 75% 55% at 50% 48%,#000 15%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 75% 55% at 50% 48%,#000 15%,transparent 75%)}
-#stage::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 55% 35% at 50% 50%,color-mix(in srgb,var(--glow-2) 16%,transparent),transparent 70%);pointer-events:none}
-.top{position:absolute;left:72px;right:72px;top:80px;display:flex;flex-direction:column;gap:22px;z-index:2}
-.eb{font:500 22px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--glow);display:flex;align-items:center;gap:16px}
+.grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:60px 60px;opacity:.22;
+ mask-image:radial-gradient(ellipse 80% 60% at 50% 45%,#000 10%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 45%,#000 10%,transparent 75%)}
+.halo{position:absolute;inset:0;background:radial-gradient(ellipse 60% 30% at 50% 45%,color-mix(in srgb,var(--glow-2) 15%,transparent),transparent 70%)}
+.layer{position:absolute;inset:0}
+/* Giriş */
+#hook{display:flex;flex-direction:column;justify-content:center;padding:0 90px;gap:28px}
+.hk{font:900 112px/.92 var(--display);font-stretch:64%;letter-spacing:-.025em;position:absolute;left:90px;right:90px;top:50%}
+.hk em{font-style:normal;color:var(--glow)}
+.hk i{font-style:normal;color:var(--glow-2)}
+/* Başlık */
+#head{position:absolute;left:72px;right:72px;top:64px;display:flex;flex-direction:column;gap:16px}
+.eb{font:500 21px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--glow);display:flex;align-items:center;gap:16px}
 .eb::before{content:"";width:40px;height:3px;background:currentColor}
-h1{font:900 104px/.9 var(--display);font-stretch:66%;letter-spacing:-.025em}
-h1 em{font-style:normal;color:var(--glow-2)}
-.who{font:600 30px/1.2 var(--display);font-stretch:100%;color:var(--muted)}
-.who b{color:var(--ink);font-weight:700}
-#map{position:absolute;left:46px;top:500px;width:988px;height:auto;z-index:2;overflow:visible}
-#map .pv{fill:var(--night-2);stroke:var(--line);stroke-width:.8}
-#map .pv.f{fill:var(--glow-2)}
-#map .rip{fill:none;stroke:var(--glow);stroke-width:2.4}
-#map .dot{fill:var(--ink)}
-#map .tag{font:700 15px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--night);stroke-width:5px}
-.hud{position:absolute;left:72px;right:72px;top:960px;z-index:2;display:flex;flex-direction:column;gap:22px}
+#head h1{font:900 92px/.9 var(--display);font-stretch:64%;letter-spacing:-.025em}
+#head h1 em{font-style:normal;color:var(--glow-2)}
+.who{font:600 27px/1.2 var(--body);color:var(--muted)}
+.who b{color:var(--ink)}
+/* Harita */
+#mapbox{position:absolute;left:0;top:330px;width:1080px;height:580px;overflow:hidden}
+#map,#lab{position:absolute;inset:0;width:1080px;height:580px;overflow:visible}
+#map .pv{fill:var(--night-2);stroke:var(--line);stroke-width:1}
+#map .rip{fill:none;stroke-width:2.6}
+#lab .tg{font:700 19px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--night);stroke-width:5px;letter-spacing:.04em}
+#lab .card rect.bg{fill:color-mix(in srgb,var(--night) 86%,transparent);stroke:var(--line)}
+#lab .card .nm{font:700 19px var(--body);fill:var(--ink);letter-spacing:.05em}
+#lab .card .fc{font:600 14px var(--mono);fill:var(--muted)}
+#lab .card .st{font:600 15px var(--mono)}
+#lab .lead{stroke:var(--muted);stroke-width:1.2}
+#lab .pin{fill:var(--ink)}
+/* Alt panel */
+#hud{position:absolute;left:72px;right:72px;top:930px;display:flex;flex-direction:column;gap:20px}
 .row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
-#date{font:900 92px/.9 var(--display);font-stretch:66%;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-#fac{font:500 24px/1.3 var(--mono);color:var(--muted);text-align:right;max-width:520px}
-#fac b{display:block;color:var(--ink);font:700 30px/1.15 var(--body)}
-.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--glow-2),var(--glow))}
-.cnt{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
-.cnt div{padding:22px 0 0;display:flex;flex-direction:column;gap:8px}
-.cnt div+div{padding-left:28px;border-left:1px solid var(--line)}
-.cnt b{font:800 76px/.85 var(--display);font-stretch:68%;font-variant-numeric:tabular-nums}
-.cnt span{font:500 18px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.c1 b{color:var(--glow-2)}.c3 b{color:var(--glow)}
-.foot{position:absolute;left:72px;right:72px;bottom:56px;display:flex;justify-content:space-between;align-items:center;z-index:2;font:500 21px var(--mono);color:var(--muted)}
+#date{font:900 96px/.85 var(--display);font-stretch:64%;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#chap{font:600 22px/1.3 var(--body);color:var(--muted);text-align:right;max-width:470px}
+#chap b{display:block;font:600 18px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--glow)}
+.bar{position:relative;height:6px;background:var(--line);border-radius:3px}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--glow-2),var(--glow))}
+.bar s{position:absolute;top:12px;font:500 14px var(--mono);text-decoration:none;color:var(--muted);transform:translateX(-50%)}
+.cnt{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:16px}
+.cnt div{padding-top:20px;display:flex;flex-direction:column;gap:8px}
+.cnt div+div{padding-left:22px;border-left:1px solid var(--line)}
+.cnt b{font:800 70px/.85 var(--display);font-stretch:66%;font-variant-numeric:tabular-nums}
+.cnt span{font:500 15px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lg{display:flex;gap:26px;font:500 17px var(--mono);color:var(--muted)}
+.lg i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:10px;vertical-align:-1px}
+/* Bölge paneli */
+#reg{position:absolute;left:72px;right:72px;top:960px;display:flex;flex-direction:column;gap:18px}
+#regN{font:900 112px/.85 var(--display);white-space:nowrap;font-stretch:64%;letter-spacing:-.02em}
+#regS{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+#regS div{padding-top:18px;display:flex;flex-direction:column;gap:6px}
+#regS div+div{padding-left:22px;border-left:1px solid var(--line)}
+#regS b{font:800 62px/.85 var(--display);font-stretch:66%}
+#regS span{font:500 15px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* Sıralama */
+#rank{padding:110px 72px 0;display:flex;flex-direction:column;gap:20px}
+#rank h2{font:900 92px/.9 var(--display);font-stretch:64%;letter-spacing:-.02em}
+#rank h2 em{font-style:normal;color:var(--glow)}
+#rank .sub{font:500 22px var(--mono);color:var(--muted)}
+.rk{display:grid;grid-template-columns:230px 1fr 96px;gap:8px 20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.rk .n{font:700 28px var(--body);letter-spacing:.03em;grid-row:1/3}
+.rk .b{height:20px;border-radius:4px}
+.rk .b.a{background:var(--glow-2)}.rk .b.r{background:var(--glow)}
+.rk .v{font:600 19px var(--mono);color:var(--muted);white-space:nowrap}
+.rk .t{grid-column:3;grid-row:1/3;text-align:right;font:800 58px/.9 var(--display);font-stretch:66%}
+.rk .t small{display:block;font:500 13px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.bw{display:flex;align-items:center;gap:12px}
+/* Kapanış */
+#end{padding:150px 72px 0;display:flex;flex-direction:column;gap:46px}
+#end h2{font:900 120px/.88 var(--display);font-stretch:62%;letter-spacing:-.025em}
+#end h2 em{font-style:normal;color:var(--glow)}
+.kp{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line)}
+.kp div{padding:26px 0;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.kp div:nth-child(even){padding-left:30px;border-left:1px solid var(--line)}
+.kp b{font:800 104px/.85 var(--display);font-stretch:64%}
+.kp span{font:500 19px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tagl{font:600 34px/1.3 var(--body);max-width:880px}
+.tagl em{font-style:normal;color:var(--glow-2)}
+.url{align-self:flex-start;font:600 26px var(--mono);background:var(--glow);color:var(--night);padding:20px 28px;border-radius:999px}
+.foot{position:absolute;left:72px;right:72px;bottom:46px;display:flex;justify-content:space-between;align-items:center;font:500 20px var(--mono);color:var(--muted)}
 .foot b{color:var(--ink);font-weight:500}
-.src{font-size:15px;opacity:.7}
-/* Kapanış kartı */
-#end{position:absolute;left:0;right:0;top:930px;bottom:0;background:linear-gradient(180deg,transparent,var(--night) 70px);z-index:3;padding:90px 72px 0;display:flex;flex-direction:column;gap:30px;opacity:0}
-.kp{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
-.kp div{padding-top:22px;display:flex;flex-direction:column;gap:8px}
-.kp div+div{padding-left:22px;border-left:1px solid var(--line)}
-.kp b{font:800 72px/.85 var(--display);font-stretch:68%}
-.kp span{font:500 16px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.cta{display:flex;justify-content:space-between;align-items:center;gap:20px}
-.cta p{font:600 30px/1.25 var(--display);font-stretch:95%;max-width:560px}
-.cta p em{font-style:normal;color:var(--glow)}
-.url{font:600 22px var(--mono);background:var(--glow);color:var(--night);padding:16px 22px;border-radius:999px;white-space:nowrap}
+.foot .src{font-size:14px;opacity:.7}
 </style>
 </head>
 <body>
 <div id="stage">
- <div class="top" id="top">
-  <p class="eb" id="eb">Enerji verimliliği · Saha etüdü</p>
-  <h1 id="h1">Türkiye'nin dört bir yanında <em>sahadayım.</em></h1>
-  <p class="who" id="who"><b>Mohamed Sallieu Bah</b> · Enerji Etüt Uzmanı</p>
+ <div class="grid"></div><div class="halo"></div>
+ <div class="layer" id="hook"></div>
+ <div id="head">
+  <p class="eb">Energy efficiency · 2024–2026</p>
+  <h1>On site <em>across Türkiye.</em></h1>
+  <p class="who"><b>Mohamed Sallieu Bah</b> · Energy Audit Specialist</p>
  </div>
- <svg id="map"></svg>
- <div class="hud" id="hud">
-  <div class="row"><div id="date"></div><div id="fac"></div></div>
-  <div class="bar"><i id="prog"></i></div>
-  <div class="cnt"><div class="c1"><b id="nIl">0</b><span id="lIl">İl</span></div><div class="c2"><b id="nGun">0</b><span id="lGun">Saha günü</span></div><div class="c3"><b id="nTes">0</b><span id="lTes">Tesis</span></div></div>
+ <div id="mapbox"><svg id="map"></svg><svg id="lab" viewBox="0 0 1080 580"></svg></div>
+ <div id="hud">
+  <div class="row"><div id="date"></div><div id="chap"></div></div>
+  <div class="bar" id="bar"><i id="prog"></i></div>
+  <div class="cnt"><div><b id="cP" style="color:var(--ink)">0</b><span>Provinces</span></div><div><b id="cA" style="color:var(--glow-2)">0</b><span>Field audit days</span></div><div><b id="cR" style="color:var(--glow)">0</b><span>Report days</span></div><div><b id="cF">0</b><span>Facilities</span></div></div>
+  <div class="lg"><span><i style="background:var(--glow-2)"></i>Field audit</span><span><i style="background:var(--glow)"></i>Report</span></div>
  </div>
- <div id="end">
-  <div class="kp" id="kp"></div>
-  <div class="cta"><p id="ctaT"></p><span class="url">sallieubah.github.io/Enerji-Et-t-Uzman-</span></div>
- </div>
- <div class="foot" id="foot"><span><b>linkedin.com/in/mohamed-sallieu-bah</b></span><span class="src" id="src">Harita verisi © OpenStreetMap katkıda bulunanlar</span></div>
+ <div id="reg"><div id="regN"></div><div id="regS"></div></div>
+ <div class="layer" id="rank"></div>
+ <div class="layer" id="end"></div>
+ <div class="foot" id="foot"><span><b>linkedin.com/in/mohamed-sallieu-bah</b></span><span class="src">Map data © OpenStreetMap contributors</span></div>
 </div>
 <script src="../data/portfoy.js"></script>
 <script src="../data/turkiye.js"></script>
 <script>
 (function(){
-const EN=new URLSearchParams(location.search).get("lang")==="en";
-const D=window.PORTFOY,T=window.TURKIYE,V=D.V;
-const AY=EN?["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]:["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
-const $=s=>document.getElementById(s),fmt=n=>n.toLocaleString(EN?"en-US":"tr-TR");
-if(EN){$("eb").textContent="Energy efficiency · Field audits";$("h1").innerHTML="On site <em>across Türkiye.</em>";
- $("who").innerHTML="<b>Mohamed Sallieu Bah</b> · Energy Audit Specialist";$("lIl").textContent="Provinces";$("lGun").textContent="Field days";$("lTes").textContent="Facilities";
- $("src").textContent="Map data © OpenStreetMap contributors";document.documentElement.lang="en"}
-const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0),sD=sum(D.M,m=>m[1]),rD=sum(D.M,m=>m[2]);
-$("kp").innerHTML=[[D.F.length,EN?"Facilities":"Tesis",""],[sD,EN?"Field days":"Saha günü","color:var(--glow-2)"],[rD,EN?"Report days":"Rapor günü","color:var(--glow)"],[D.C.length,EN?"Provinces":"İl",""]]
- .map(k=>`<div><b style="${k[2]}">${fmt(k[0])}</b><span>${k[1]}</span></div>`).join("");
-$("ctaT").innerHTML=EN?"Transformer, motor and pump efficiency, <em>from site to report.</em>":"Trafo, motor ve pompa verimliliğinde <em>sahadan rapora.</em>";
-/* Harita */
-const NS="http://www.w3.org/2000/svg",svg=$("map");svg.setAttribute("viewBox",`0 0 ${T.w} ${T.h}`);
-const P={},gP=document.createElementNS(NS,"g"),gFx=document.createElementNS(NS,"g");svg.append(gP,gFx);
-Object.entries(T.p).forEach(([n,[d,cx,cy]])=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("class","pv");gP.append(p);P[n]={p,cx,cy}});
-const days={};V.forEach(v=>days[v[2]]=(days[v[2]]||0)+1);const dmax=Math.max(...Object.values(days));
-const op=n=>.3+.7*Math.sqrt(n/dmax);
-/* Zaman çizelgesi (saniye) */
-const T0=2.2,T1=14.2,DUR=20;window.DURATION=DUR;
-const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;          // ziyaret ilerleyişi
-const vt=i=>T0+(T1-T0)*(function inv(y){let a=0,b=1;for(let k=0;k<30;k++){const m=(a+b)/2;ease(m)<y?a=m:b=m}return a})(i/(V.length-1)); // i. ziyaretin anı
-const VT=V.map((_,i)=>vt(i));
+const D=window.PORTFOY,T=window.TURKIYE,$=s=>document.getElementById(s);
+const fmt=n=>n.toLocaleString("en-US"),UP=s=>s.toLocaleUpperCase("tr-TR");
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),fade=(t,a,b)=>cl((t-a)/(b-a));
-const dl=d=>{const[y,m]=d.split("-");return AY[+m-1]+" "+y};
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,eo=x=>1-Math.pow(1-x,3);
+const lerp=(a,b,k)=>a+(b-a)*k;
+
+/* ---------- Veri: il bazında etüt (saha) / rapor / tesis ---------- */
+const EV=[...D.V.map(v=>({d:v[0],f:v[1],p:v[2],k:"a"})),...D.R.map(r=>({d:r[0],f:r[1],p:r[2],k:"r"}))].sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.k<b.k?-1:1);
+const PS={};EV.forEach(e=>{if(!e.p)return;const s=PS[e.p]=PS[e.p]||{a:new Set,r:new Set,t:new Set,ad:0,rd:0};s[e.k].add(e.f);s.t.add(e.f);e.k==="a"?s.ad++:s.rd++});
+const stat=p=>{const s=PS[p];return{a:s.a.size,r:s.r.size,t:s.t.size,ad:s.ad,rd:s.rd}};
+const abroad=D.F.filter(f=>f.c==="AZERBAYCAN").length;
+const maxAD=Math.max(...Object.values(PS).map(s=>s.ad)),maxRD=Math.max(...Object.values(PS).map(s=>s.rd));
+
+/* ---------- Zaman çizelgesi (saniye) ---------- */
+const S={hook:[0,6.6],title:[6.0,9.0],jour:[9.0,41.0],full:[41.0,46.0],tour:[46.0,66.0],rank:[66.0,73.0],end:[73.0,80.0]};
+const DUR=80;window.DURATION=DUR;
+const day=s=>Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10))/864e5;
+const D0=day("2024-04-01"),D1=day("2026-11-30");
+const tOf=d=>S.jour[0]+(S.jour[1]-S.jour[0])*(d-D0)/(D1-D0);
+/* Aynı gündeki olayları gün içine yay */
+const perDay={};EV.forEach(e=>{e.i=(perDay[e.d]=(perDay[e.d]||0)+1)-1});
+EV.forEach(e=>{e.t=tOf(day(e.d)+e.i/Math.max(perDay[e.d],1)*.9)});
+
+/* ---------- Harita ---------- */
+const NS="http://www.w3.org/2000/svg",mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e};
+const svg=$("map"),W=1080,H=580,gP=mk("g",{}),gFx=mk("g",{});svg.append(gP,gFx);
+const P={};
+Object.entries(T.p).forEach(([n,[d,cx,cy]])=>{const p=mk("path",{d,class:"pv","vector-effect":"non-scaling-stroke"});gP.append(p);P[n]={p,cx,cy}});
+Object.values(P).forEach(o=>{const b=o.p.getBBox();o.b=b});
+const fit=(x0,y0,x1,y1,pad)=>{let w=x1-x0+pad*2,h=y1-y0+pad*2;const ar=W/H;if(w/h<ar)w=h*ar;else h=w/ar;const cx=(x0+x1)/2,cy=(y0+y1)/2;return[cx-w/2,cy-h/2,w,h]};
+const FULL=fit(0,0,T.w,T.h,14);
+const boxOf=names=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;names.forEach(n=>{const b=P[n].b;x0=Math.min(x0,b.x);y0=Math.min(y0,b.y);x1=Math.max(x1,b.x+b.width);y1=Math.max(y1,b.y+b.height)});return[x0,y0,x1,y1]};
+const REG=[
+ {n:"Marmara",p:["İstanbul","Kocaeli","Tekirdağ","Bursa","Sakarya","Yalova","Bilecik","Kırklareli","Çanakkale","Balıkesir"]},
+ {n:"Aegean",p:["İzmir","Manisa","Aydın","Denizli","Muğla","Afyon"]},
+ {n:"Central & Black Sea",p:["Ankara","Konya","Kayseri","Bolu","Düzce","Samsun","Trabzon"]},
+ {n:"South & East",p:["Adana","Mersin","Osmaniye","Antalya","Kahramanmaraş","Gaziantep","Şanlıurfa","Malatya","Bingöl","Kars"]}
+].map(r=>{r.p=r.p.filter(n=>PS[n]);const[x0,y0,x1,y1]=boxOf(r.p);r.vb=fit(x0,y0,x1,y1,22);return r});
+const RT=(S.tour[1]-S.tour[0])/REG.length;
+let VB=FULL.slice();
+const setVB=v=>{VB=v;svg.setAttribute("viewBox",v.map(x=>x.toFixed(2)).join(" "))};
+const proj=(x,y)=>[(x-VB[0])/VB[2]*W,(y-VB[1])/VB[3]*H];
+
+/* ---------- Etiket yerleşimi (çakışmasız) ---------- */
+const ctx=document.createElement("canvas").getContext("2d");
+const pl=(n,one,many)=>`${n} ${n===1?one:many||one+"s"}`;
+/* bağlantı çizgisi başka bir kartın içinden geçiyor mu */
+const segHit=(x1,y1,x2,y2,q)=>{for(let k=.15;k<.95;k+=.1){const x=x1+(x2-x1)*k,y=y1+(y2-y1)*k;if(x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h)return true}return false};
+const tw=(t,f)=>{ctx.font=f;return ctx.measureText(t).width};
+function layout(names,vb){
+ const placed=[],out=[];const save=VB;VB=vb;
+ const pins=names.map(n=>proj(P[n].cx,P[n].cy));
+ names.slice().sort((a,b)=>stat(b).t-stat(a).t).forEach(n=>{
+  const s=stat(n),[px,py]=proj(P[n].cx,P[n].cy);
+  const l1=UP(n),l2=`${pl(s.a,"audit")} · ${pl(s.r,"report")}`,l3=pl(s.t,"facility","facilities");
+  const w=Math.max(tw(l1,"700 19px 'IBM Plex Sans'")+18+tw(l3,"600 14px 'IBM Plex Mono'"),tw(l2,"600 15px 'IBM Plex Mono'"))+28,h=58;
+  let best=null,bs=1e9;
+  for(const r of [44,64,88,116,150,190])for(let a=-180;a<180;a+=15){
+   const rad=a*Math.PI/180,cx=px+Math.cos(rad)*r,cy=py+Math.sin(rad)*r*.75;
+   const x=Math.cos(rad)>=0?cx:cx-w,y=cy-h/2;
+   let sc=0;
+   if(x<8||y<4||x+w>W-8||y+h>H-4)sc+=1e6;
+   placed.forEach(q=>{const ox=Math.min(x+w,q.x+q.w)-Math.max(x,q.x)+14,oy=Math.min(y+h,q.y+q.h)-Math.max(y,q.y)+10;if(ox>0&&oy>0)sc+=5e4+ox*oy*40});
+   placed.forEach(q=>{if(segHit(px,py,Math.cos(rad)>=0?x:x+w,y+h/2,q))sc+=3e3});
+   pins.forEach(([qx,qy])=>{if(qx>x-6&&qx<x+w+6&&qy>y-6&&qy<y+h+6)sc+=900});
+   sc+=r*.6;
+   if(sc<bs){bs=sc;best={x,y,w,h,px,py,n,l1,l2,l3,s}}
+  }
+  placed.push(best);out.push(best)});
+ VB=save;return out;
+}
+REG.forEach(r=>r.L=layout(r.p,r.vb));
+const TOP=Object.keys(PS).sort((a,b)=>stat(b).t-stat(a).t).slice(0,7);
+const FULL_L=layout(TOP,FULL);
+function cards(L,k0,stag){
+ return L.map((c,i)=>{const k=eo(fade(k0,i*stag,i*stag+.35));if(k<=0)return"";
+  const ax=c.x+(c.x>c.px?0:c.w),ay=c.y+c.h/2;
+  return `<g class="card" style="opacity:${k}" transform="translate(0 ${(1-k)*10})">
+   <line class="lead" x1="${c.px}" y1="${c.py}" x2="${ax}" y2="${ay}"/>
+   <circle class="pin" cx="${c.px}" cy="${c.py}" r="4.5"/>
+   <rect class="bg" x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="10"/>
+   <text class="nm" x="${c.x+14}" y="${c.y+23}">${c.l1}</text>
+   <text class="fc" x="${c.x+c.w-14}" y="${c.y+23}" text-anchor="end">${c.l3}</text>
+   <text class="st" x="${c.x+14}" y="${c.y+46}"><tspan fill="var(--glow-2)">${pl(c.s.a,"audit")}</tspan><tspan fill="var(--muted)"> · </tspan><tspan fill="var(--glow)">${pl(c.s.r,"report")}</tspan></text></g>`}).join("");
+}
+
+/* ---------- Sabit içerikler ---------- */
+const totF=D.F.length,totA=D.V.length,totR=D.R.length;
+const HOOK=[
+ [0.2,2.3,`What do <em>two years</em><br>of energy audits<br>look like?`],
+ [2.5,4.5,`<i>${totA} days</i> on site.<br><em>${totR} days</em><br>writing reports.`],
+ [4.7,6.6,`Let's put them<br>on the <i>map.</i>`]];
+const CH=[["2024","Chapter 1","Building the foundation in reporting"],["2025","Chapter 2","Moving into the field"],["2026","Chapter 3","Leading audits on site"]];
+const yearX=["2025","2026"].map(y=>(day(y+"-01-01")-D0)/(D1-D0)*100);
+$("bar").insertAdjacentHTML("beforeend",yearX.map((x,i)=>`<s style="left:${x}%">${2025+i}</s>`).join(""));
+const RK=Object.keys(PS).sort((a,b)=>stat(b).t-stat(a).t||stat(b).a-stat(a).a).slice(0,8);
+const rkMax=Math.max(...RK.map(n=>Math.max(stat(n).a,stat(n).r)));
+$("end").innerHTML=`<h2>Measured on site.<br><em>Proven in reports.</em></h2>
+ <div class="kp"><div><b>${fmt(totF)}</b><span>Facilities</span></div><div><b style="color:var(--glow-2)">${fmt(totA)}</b><span>Field audit days</span></div>
+ <div><b style="color:var(--glow)">${fmt(totR)}</b><span>Report days</span></div><div><b>${Object.keys(PS).length}</b><span>Provinces + ${abroad} sites abroad</span></div></div>
+ <p class="tagl">Transformer, motor and pump efficiency, <em>from the first measurement to the final report.</em></p>
+ <span class="url">sallieubah.github.io/Enerji-Et-t-Uzman-</span>`;
+
+/* ---------- Kare çizimi ---------- */
 window.render=function(t){
- let n=0;while(n<V.length&&VT[n]<=t)n++;
- const cnt={},fac=new Set();for(let i=0;i<n;i++){cnt[V[i][2]]=(cnt[V[i][2]]||0)+1;fac.add(V[i][1])}
- Object.entries(P).forEach(([k,{p}])=>{const c=cnt[k]||0;p.setAttribute("class","pv"+(c?" f":""));p.style.fillOpacity=c?op(c):""});
- /* dalgalar ve noktalar */
- let fx="";
- for(let i=0;i<n;i++){const age=t-VT[i];if(age<1.1){const{cx,cy}=P[V[i][2]],k=age/1.1;fx+=`<circle class="rip" cx="${cx}" cy="${cy}" r="${4+k*26}" style="opacity:${1-k}"/>`}}
- Object.keys(cnt).forEach(k=>{const{cx,cy}=P[k];fx+=`<circle class="dot" cx="${cx}" cy="${cy}" r="2.6"/>`});
- if(t>=T1+.6){const pulse=((t-T1)%1.6)/1.6;Object.keys(cnt).forEach(k=>{const{cx,cy}=P[k];fx+=`<circle class="rip" cx="${cx}" cy="${cy}" r="${3+pulse*16}" style="stroke:var(--glow-2);opacity:${(1-pulse)*.9}"/>`})}
- if(n&&t<T1+.4){const last=V[n-1],{cx,cy}=P[last[2]];fx+=`<text class="tag" x="${cx+10}" y="${cy-10}">${last[2]}</text>`}
+ /* giriş */
+ $("hook").innerHTML=HOOK.map(([a,b,h])=>{const k=fade(t,a,a+.5)*(1-fade(t,b-.4,b));if(k<=0)return"";
+  return `<div class="hk" style="opacity:${k};transform:translateY(calc(-50% + ${(1-eo(fade(t,a,a+.5)))*40}px))">${h}</div>`}).join("");
+ const showHead=fade(t,S.title[0]+.3,S.title[0]+1.2)*(1-fade(t,S.rank[0]-.3,S.rank[0]+.3));
+ $("head").style.opacity=showHead;$("head").style.transform=`translateY(${(1-eo(fade(t,S.title[0]+.3,S.title[0]+1.2)))*24}px)`;
+ /* harita görünürlüğü ve kamera */
+ const mapOn=fade(t,5.6,7.4)*(1-fade(t,S.rank[0]-.3,S.rank[0]+.3));
+ $("mapbox").style.opacity=mapOn;
+ let vb=FULL;
+ if(t>=S.tour[0]-1&&t<S.rank[0]){
+  const j=Math.floor((t-S.tour[0])/RT),loc=(t-S.tour[0])-j*RT;
+  const from=j<=0?FULL:REG[Math.min(j-1,REG.length-1)].vb;
+  if(t<S.tour[0])vb=FULL;
+  else if(j>=REG.length){vb=REG[REG.length-1].vb.map((v,i)=>lerp(v,FULL[i],ease(fade(t,S.tour[1],S.tour[1]+.9))))}
+  else{const to=REG[j].vb,k=ease(cl(loc/1.1));vb=from.map((v,i)=>lerp(v,to[i],k))}
+ }
+ setVB(vb);
+ /* il dolguları: olaylar zamana göre birikir */
+ const cnt={},fac=new Set();let nA=0,nR=0;
+ const until=t>=S.jour[1]?1e9:t;
+ EV.forEach(e=>{if(e.t>until)return;fac.add(e.f);e.k==="a"?nA++:nR++;if(e.p){const c=cnt[e.p]=cnt[e.p]||{a:0,r:0};c[e.k]++}});
+ const sweep=fade(t,4.9,6.8); // haritanın batıdan doğuya belirmesi
+ Object.entries(P).forEach(([n,o])=>{const c=cnt[n];
+  const vis=cl((sweep*1.25-(o.cx/T.w)*.25)/1);o.p.style.opacity=.15+.85*vis;
+  if(c&&c.a){o.p.style.fill="var(--glow-2)";o.p.style.fillOpacity=.28+.72*Math.sqrt(c.a/maxAD)}
+  else if(c&&c.r){o.p.style.fill="var(--glow)";o.p.style.fillOpacity=.16+.4*Math.sqrt(c.r/maxRD)}
+  else{o.p.style.fill="";o.p.style.fillOpacity=""}});
+ /* dalgalar */
+ let fx="";const z=VB[2]/FULL[2];
+ if(t>=S.jour[0]&&t<S.jour[1]+1.2)EV.forEach(e=>{if(!e.p||e.t>t)return;const age=t-e.t,L=e.k==="a"?1.2:.8;if(age>L)return;const k=age/L,o=P[e.p];
+  fx+=`<circle class="rip" cx="${o.cx}" cy="${o.cy}" r="${(e.k==="a"?4+k*30:3+k*16)*z}" style="stroke:var(${e.k==="a"?"--glow-2":"--glow"});opacity:${(1-k)*(e.k==="a"?1:.8)};stroke-width:${(e.k==="a"?2.6:1.8)*z}"/>`});
  gFx.innerHTML=fx;
- /* HUD */
- const last=n?V[n-1]:V[0];
- $("date").textContent=n?dl(last[0]):dl(V[0][0]);
- $("fac").innerHTML=n?`<b>${last[2]}</b>${EN?"Field audit":"Saha etüdü"}`:"";
- $("prog").style.width=(n/V.length*100)+"%";
- $("nIl").textContent=Object.keys(cnt).length;$("nGun").textContent=n;$("nTes").textContent=fac.size;
- /* giriş ve kapanış */
- const intro=fade(t,0,.9);$("top").style.opacity=intro;$("top").style.transform=`translateY(${(1-ease(intro))*30}px)`;
- svg.style.opacity=.25+.75*fade(t,.6,1.8);
- $("hud").style.opacity=fade(t,1.4,2.2)*(1-fade(t,15,15.6));
- const e=fade(t,15.2,16.2);$("end").style.opacity=e;$("end").style.transform=`translateY(${(1-ease(e))*40}px)`;
- if(t>=DUR-0.01)$("date").textContent="";
+ /* etiketler */
+ let lab="";
+ if(t>=S.jour[0]&&t<S.jour[1]){ // yolculukta: son olayların il adları
+  const recent={};EV.forEach(e=>{if(e.p&&e.t<=t&&t-e.t<1.4)recent[e.p]=Math.max(recent[e.p]||0,e.t)});
+  Object.entries(recent).sort((a,b)=>b[1]-a[1]).slice(0,3).forEach(([n,te])=>{const[x,y]=proj(P[n].cx,P[n].cy),k=1-fade(t,te+.8,te+1.4);
+   lab+=`<text class="tg" x="${x+12}" y="${y-12}" style="opacity:${k}">${UP(n)}</text>`});
+ }
+ if(t>=S.full[0]&&t<S.tour[0]+.3)lab+=`<g style="opacity:${1-fade(t,S.tour[0]-.5,S.tour[0])}">${cards(FULL_L,t-S.full[0]-.3,.28)}</g>`;
+ if(t>=S.tour[0]&&t<S.tour[1]){const j=Math.floor((t-S.tour[0])/RT),loc=(t-S.tour[0])-j*RT;
+  lab+=`<g style="opacity:${1-fade(loc,RT-.45,RT-.05)}">${cards(REG[j].L,loc-1.15,.16)}</g>`}
+ $("lab").innerHTML=lab;
+ /* alt panel: yolculuk */
+ const hudOn=fade(t,S.jour[0]-.8,S.jour[0])*(1-fade(t,S.tour[0]-.6,S.tour[0]));
+ $("hud").style.opacity=hudOn;
+ const cd=D0+(D1-D0)*cl((t-S.jour[0])/(S.jour[1]-S.jour[0])),dt=new Date(cd*864e5);
+ $("date").textContent=MON[dt.getUTCMonth()]+" "+dt.getUTCFullYear();
+ const ch=CH.find(c=>c[0]==String(dt.getUTCFullYear()));
+ const chK=Math.min(1,fade(cd,day(ch[0]+"-01-01")-(ch[0]==="2024"?400:0),day(ch[0]+"-01-01")+20));
+ $("chap").innerHTML=`<b>${ch[1]} · ${ch[0]}</b><span style="opacity:${chK}">${ch[2]}</span>`;
+ $("prog").style.width=(cl((t-S.jour[0])/(S.jour[1]-S.jour[0]))*100)+"%";
+ $("cP").textContent=Object.keys(cnt).length;$("cA").textContent=nA;$("cR").textContent=nR;$("cF").textContent=fac.size;
+ /* bölge paneli */
+ const regOn=t>=S.tour[0]&&t<S.tour[1];$("reg").style.opacity=regOn?1-fade(t,S.tour[1]-.4,S.tour[1]):0;
+ if(regOn){const j=Math.floor((t-S.tour[0])/RT),loc=(t-S.tour[0])-j*RT,r=REG[j],k=eo(fade(loc,.2,.8))*(1-fade(loc,RT-.4,RT));
+  const ss=r.p.map(stat),sum=f=>ss.reduce((a,s)=>a+f(s),0);
+  $("reg").style.opacity=k;$("reg").style.transform=`translateY(${(1-k)*20}px)`;
+  $("regN").textContent=r.n;
+  $("regS").innerHTML=`<div><b>${r.p.length}</b><span>Provinces</span></div><div><b style="color:var(--glow-2)">${sum(s=>s.a)}</b><span>Audits</span></div><div><b style="color:var(--glow)">${sum(s=>s.r)}</b><span>Reports</span></div><div><b>${sum(s=>s.t)}</b><span>Facilities</span></div>`}
+ /* sıralama */
+ const rkOn=fade(t,S.rank[0],S.rank[0]+.6)*(1-fade(t,S.end[0]-.4,S.end[0]));$("rank").style.opacity=rkOn;
+ if(rkOn>0){const g=t-S.rank[0];
+  $("rank").innerHTML=`<p class="eb">Where the work happened</p><h2>Top provinces <em>by facilities</em></h2><p class="sub">Audits = facilities audited on site · Reports = facilities with a report</p>`+
+   RK.map((n,i)=>{const s=stat(n),k=eo(fade(g,.5+i*.18,1.6+i*.18));
+    return `<div class="rk" style="opacity:${fade(g,.3+i*.18,.7+i*.18)}"><span class="n">${UP(n)}</span>
+     <div class="bw"><div class="b a" style="width:${s.a/rkMax*100*k}%"></div><span class="v" style="color:var(--glow-2)">${pl(Math.round(s.a*k),"audit")}</span></div>
+     <div class="bw"><div class="b r" style="width:${s.r/rkMax*100*k}%"></div><span class="v" style="color:var(--glow)">${pl(Math.round(s.r*k),"report")}</span></div>
+     <span class="t">${Math.round(s.t*k)}<small>facilities</small></span></div>`}).join("")}
+ /* kapanış */
+ const en=fade(t,S.end[0],S.end[0]+.8);$("end").style.opacity=en;$("end").style.transform=`translateY(${(1-eo(en))*40}px)`;
+ $("foot").style.opacity=fade(t,S.title[0]+.6,S.title[0]+1.4);
 };
 window.render(0);
-window.READY=document.fonts.ready.then(()=>true);
+window.READY=document.fonts.ready.then(()=>{REG.forEach(r=>r.L=layout(r.p,r.vb));FULL_L.splice(0,FULL_L.length,...layout(TOP,FULL));return true});
 })();
 </script>
 </body>

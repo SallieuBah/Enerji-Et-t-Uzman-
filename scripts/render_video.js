@@ -1,15 +1,15 @@
 // Saha haritası animasyonunu MP4'e çevirir: kareleri Playwright ile çizer, ffmpeg ile birleştirir.
-// Kullanım: node scripts/render_video.js [tr|en]   →   video/saha-haritasi-<dil>.mp4
+// Kullanım: node scripts/render_video.js   →   video/saha-haritasi-en.mp4
 const {chromium}=require("playwright");
 const {spawn}=require("child_process");
 const path=require("path");
-const lang=process.argv[2]==="en"?"en":"tr",FPS=30;
+const FPS=30;
 const root=path.resolve(__dirname,"..");
-const out=path.join(root,"video",`saha-haritasi-${lang}.mp4`);
+const out=path.join(root,"video","saha-haritasi-en.mp4");
 (async()=>{
  const browser=await chromium.launch();
  const page=await browser.newPage({viewport:{width:1080,height:1350},deviceScaleFactor:1});
- await page.goto("file://"+path.join(root,"video","harita.html")+(lang==="en"?"?lang=en":""));
+ await page.goto("file://"+path.join(root,"video","harita.html"));
  await page.evaluate(()=>window.READY);
  const dur=await page.evaluate(()=>window.DURATION),frames=Math.round(dur*FPS);
  const ff=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(FPS),"-i","-",

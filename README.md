@@ -66,11 +66,12 @@ Bir dosyayı değiştirdiğinizde bu etiketi güncelleyin (örneğin tarih-saat:
 
 ## LinkedIn videosu
 
-Saha haritası animasyonu 20 saniyelik 1080×1350 (4:5) MP4 olarak üretilir:
+Saha haritası animasyonu 80 saniyelik, 1080×1350 (4:5) İngilizce bir MP4 olarak üretilir. Tesis adları gösterilmez.
+Sahneler: giriş soruları → başlık → takvim üzerinde saha ve rapor yolculuğu → tam harita → bölge turu
+(il başına etüt, rapor ve tesis sayıları) → il sıralaması → kapanış.
 
 ```bash
-node scripts/render_video.js tr   # video/saha-haritasi-tr.mp4
-node scripts/render_video.js en   # video/saha-haritasi-en.mp4
+node scripts/render_video.js      # video/saha-haritasi-en.mp4
 ```
 
 Playwright ve ffmpeg gerekir. Video `data/` klasöründeki güncel verilerle çizildiği için Excel güncellendikten sonra

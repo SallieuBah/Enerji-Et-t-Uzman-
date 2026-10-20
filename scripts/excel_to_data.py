@@ -124,7 +124,13 @@ def main(path):
                 facility_city.get(t["Fabrika / Tesis"].strip()) or province(t["Konum"])]
                for t in tasks if t["Görev"] == "Saha Etüdü")
 
-    data = json.dumps(dict(F=F, M=M, C=C, V=V), ensure_ascii=False, separators=(",", ":"), default=str)
+    # Rapor günleri tarih sırasıyla; il, saha etüdü yapılan tesiste saha ilinden, diğerlerinde portföy konumundan alınır
+    facility_prov = {f["n"]: f["p"] for f in F}
+    R = sorted([iso(t["Tarih"]), t["Fabrika / Tesis"].strip(),
+                facility_city.get(t["Fabrika / Tesis"].strip()) or facility_prov.get(t["Fabrika / Tesis"].strip())]
+               for t in tasks if t["Görev"] == "Rapor")
+
+    data = json.dumps(dict(F=F, M=M, C=C, V=V, R=R), ensure_ascii=False, separators=(",", ":"), default=str)
     OUT.write_text("// Otomatik üretildi: scripts/excel_to_data.py\nwindow.PORTFOY=" + data + ";\n", encoding="utf-8")
     print(f"{OUT} yazıldı: {len(F)} tesis, {len(tasks)} görev günü, {len(C)} il")
 
