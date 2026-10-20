@@ -3,3 +3,5 @@
 .DS_Store
 __pycache__/
 video/*.mp4
+video/*.wav
+video/*.mp3

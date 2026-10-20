@@ -74,5 +74,13 @@ Sahneler: giriş soruları → başlık → takvim üzerinde saha ve rapor yolcu
 node scripts/render_video.js      # video/saha-haritasi-en.mp4
 ```
 
+Arka plan müziği `scripts/music.py` ile sentezlenir (vokalsiz, 120 BPM, Re minör; son 3 saniyede yavaşlar):
+
+```bash
+python scripts/music.py video video/muzik-video.wav     # 80 sn, videodaki dönüm noktalarıyla senkron
+python scripts/music.py long  video/muzik-120s.wav      # 120 sn bağımsız sürüm
+ffmpeg -i video/saha-haritasi-en.mp4 -i video/muzik-video.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest video/saha-haritasi-en-muzikli.mp4
+```
+
 Playwright ve ffmpeg gerekir. Video `data/` klasöründeki güncel verilerle çizildiği için Excel güncellendikten sonra
 yeniden üretilebilir. MP4 dosyaları depoya eklenmez.
